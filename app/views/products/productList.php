@@ -27,7 +27,7 @@ $chuoi_con = "/products/bin";
 // echo ($chuoi_con);
 
 if (strpos($chuoi_cha, $chuoi_con)) {
-    echo ('Chuoi con trong chuoi cha');
+    // echo ('Chuoi con trong chuoi cha');
 } else {
     echo ('<a href="/admin/products/add">Add Product </a>');
 }
