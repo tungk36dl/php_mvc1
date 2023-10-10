@@ -21,24 +21,24 @@ class product
             $stmt->bindParam(':price', $price);   
             return $stmt->execute();
     }
-    public static function delete($stt){
+    public static function delete($id){
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("UPDATE products SET delete_date = now() WHERE stt = :stt");
-            $stmt->bindParam(':stt', $stt);
+            $stmt = $conn->prepare("UPDATE products SET delete_date = now() WHERE id = :id");
+            $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
 
-    public static function bin_restore($stt){
+    public static function bin_restore($id){
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("UPDATE products SET delete_date = null WHERE stt = :stt");
-            $stmt->bindParam(':stt', $stt);
+            $stmt = $conn->prepare("UPDATE products SET delete_date = null WHERE id = :id");
+            $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
 
-    public static function bin_delete($stt){
+    public static function bin_delete($id){
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("DELETE FROM products WHERE stt = :stt");
-            $stmt->bindParam(':stt', $stt);
+            $stmt = $conn->prepare("DELETE FROM products WHERE id = :id");
+            $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
     public static function add($param){
@@ -56,22 +56,22 @@ class product
             return $stmt->execute();
     }
 
-    public static function save($stt, $param){
+    public static function save($id, $param){
         $conn = Database::getConnection();
         $name = $param['name'];
         $code = $param['code'];
         $description = $param['description'];
         $price = $param['price'];
-            $stmt = $conn->prepare("UPDATE products SET name = :name, code = :code, description = :description, price = :price WHERE stt = :stt");
+            $stmt = $conn->prepare("UPDATE products SET name = :name, code = :code, description = :description, price = :price WHERE id = :id");
             $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':stt', $stt);
+            $stmt->bindParam(':id', $id);
             $stmt->bindParam(':code', $code);
             $stmt->bindParam(':description', $description);   
             $stmt->bindParam(':price', $price);  
             return $stmt->execute();
     }
 
-    public static function get($stt)
+    public static function get($id)
     {
             try {
 
@@ -79,8 +79,8 @@ class product
 
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $stmt = $conn->prepare("SELECT * FROM products WHERE stt=:stt");
-                $stmt->bindParam(':stt', $stt);
+                $stmt = $conn->prepare("SELECT * FROM products WHERE id=:id");
+                $stmt->bindParam(':id', $id);
 
                 $stmt->execute();
 

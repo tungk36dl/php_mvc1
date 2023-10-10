@@ -80,8 +80,8 @@ if(isset($nPage))
         $id = $one['id'];
         $username = $one['username'];
         $email = $one['email'];
-        $first_name = $one['first_name'];
-        $last_name = $one['last_name'];
+        $first_name = $one['first_name'] ?? '';
+        $last_name = $one['last_name'] ?? '';
         $is_admin = $one['is_admin'];
 
         echo('<tr>');

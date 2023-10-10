@@ -8,15 +8,15 @@ class ProductController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/Product.php";
         $ret = null;
-        if ($stt = ($_GET['stt'] ?? "")) {
+        if ($id = ($_GET['id'] ?? "")) {
 
             try{
-                $ret = product::get($stt);
+                $ret = product::get($id);
 
                 if($_POST['name'] ?? ""){
                     // die("123456");
-                    product::save($stt, $_POST);
-                    $ret = product::get($stt);
+                    product::save($id, $_POST);
+                    $ret = product::get($id);
                     $msg = "Update thành công!";
                     // Header("Location: /admin/users");
                 }
@@ -131,10 +131,10 @@ class ProductController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/Product.php";
 
-        if ($stt = ($_GET['stt'] ?? "")) {
+        if ($id = ($_GET['id'] ?? "")) {
 
             try{
-                $ret = product::delete($stt);
+                $ret = product::delete($id);
                 if($ret){
                     Header("Location: /admin/products");
                 }
@@ -154,11 +154,11 @@ class ProductController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/Product.php";
 
-        if ($stt = ($_GET['stt'] ?? "")) {
+        if ($id = ($_GET['id'] ?? "")) {
 
             try{
                 // die("123214");
-                $ret = product::bin_restore($stt);
+                $ret = product::bin_restore($id);
                 if($ret){
                     Header("Location: /admin/products/bin");
                 }
@@ -177,10 +177,10 @@ class ProductController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/Product.php";
 
-        if ($stt = ($_GET['stt'] ?? "")) {
+        if ($id = ($_GET['id'] ?? "")) {
 
             try{
-                $ret = product::bin_delete($stt);
+                $ret = product::bin_delete($id);
                 if($ret){
                     Header("Location: /admin/products");
                 }

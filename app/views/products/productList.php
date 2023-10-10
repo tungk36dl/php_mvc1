@@ -27,7 +27,7 @@ $chuoi_con = "/products/bin";
 // echo ($chuoi_con);
 
 if (strpos($chuoi_cha, $chuoi_con)) {
-    // echo ('Chuoi con trong chuoi cha');
+    echo ('Chuoi con trong chuoi cha');
 } else {
     echo ('<a href="/admin/products/add">Add Product </a>');
 }
@@ -76,7 +76,7 @@ if ($_GET['sort_type'] ?? '') {
 <table border="1">
 
     <tr>
-        <th>STT</th>
+        <th>id</th>
         <th> <a href="<?php if (strpos($chuoi_cha, $chuoi_con)) {
                             echo ('/admin/products/bin');
                         } else {
@@ -90,7 +90,7 @@ if ($_GET['sort_type'] ?? '') {
                             echo ('/admin/products/bin');
                         } else {
                             echo ('/admin/products');
-                        } ?>?sort_by=name&sort_type=<?php echo $sort_type;
+                        } ?>?sort_by=price&sort_type=<?php echo $sort_type;
                                                                                                                                                             echo $str1 ?? ''; ?>">Giá sản phẩm</th>
         <th>Action</th>
     </tr>
@@ -107,22 +107,22 @@ if ($_GET['sort_type'] ?? '') {
 
 
     foreach ($data as $one) {
-        $stt = $one['stt'];
+        $id = $one['id'];
         $name = $one['name'];
         $code = $one['code'];
         $description = $one['description'];
         $price = number_format($one['price'], 0, '.', ' ');;
         echo ('<tr>');
-        echo ("<td> $stt </td> ");
+        echo ("<td> $id </td> ");
         echo ("<td> $name </td> ");
         echo ("<td> $code  </td> ");
         echo ("<td> $description  </td> ");
         echo ("<td> $price  </td> ");
 
         if (strpos($chuoi_cha, $chuoi_con)) {
-            echo ("<td> <a href='/admin/products/bin/restore?stt=$stt'> Restore </a>|<a href='/admin/products/bin/delete?stt=$stt'> Delete </a> </td> ");
+            echo ("<td> <a href='/admin/products/bin/restore?id=$id'> Restore </a>|<a href='/admin/products/bin/delete?id=$id'> Delete </a> </td> ");
         } else {
-            echo ("<td> <a href='/admin/products/edit?stt=$stt'> Edit </a>|<a href='/admin/products/delete?stt=$stt'> Delete </a> </td> ");
+            echo ("<td> <a href='/admin/products/edit?id=$id'> Edit </a>|<a href='/admin/products/delete?id=$id'> Delete </a> </td> ");
         }
         echo ('</tr>');
     }

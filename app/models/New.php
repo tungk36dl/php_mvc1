@@ -3,7 +3,6 @@
 class tintuc
 { 
 
-    
     public static function edit($param){
         $conn = Database::getConnection();
         $newname = $param['newname'];
