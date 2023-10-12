@@ -14,7 +14,7 @@ Edit  product.....
 
 <form action="" method="POST">
 
-    Tiêu đề <input type="text" name="newname" value="<?php echo $ret['newname']; ?>" >
+    Tiêu đề <input type="text" name="name" value="<?php echo $ret['name']; ?>" >
     <p></p>
     Mô tả <textarea name="description" id="" cols="30" rows="3"> <?php echo $ret['description']; ?></textarea>
     <p></p>

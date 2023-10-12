@@ -16,7 +16,7 @@ Add  New.....
 
 <form action="" method="POST">
 
-    Tiêu đề <input type="text" name="newname" >
+    Tiêu đề <input type="text" name="name" >
     <p></p>
     Mô tả <textarea name="description" id="" cols="30" rows="3"></textarea>
     <p></p>

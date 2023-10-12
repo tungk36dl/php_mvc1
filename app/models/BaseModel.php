@@ -1,46 +1,46 @@
 <?php
 
-define('def_salt', "abc"); // Để gán thêm vào mật khẩu md5 bảo vệ tìa khoản
+define('def_salt', "abc");// Để gán thêm vào mật khẩu md5 bảo vệ tìa khoản
 
-class user
+class BaseModel
 {
 
-    public static function auth($user, $pass)
-    {
+    // public static function auth($user, $pass)
+    // {
            
-                // $pass0 = $pass;
-                $pass = md5($pass.def_salt);
+    //             // $pass0 = $pass;
+    //             $pass = md5($pass.def_salt);
 
                 
-                // die("123: $pass / $pass0 ");
+    //             // die("123: $pass / $pass0 ");
 
-                $conn = Database::getConnection();
+    //             $conn = Database::getConnection();
 
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $stmt = $conn->prepare("SELECT * FROM Users WHERE (username=:user or email=:user) AND password=:pass LIMIT 1");
-                $stmt->bindParam(':user', $user);
-                $stmt->bindParam(':pass', $pass);
+    //             $stmt = $conn->prepare("SELECT * FROM Users WHERE (username=:user or email=:user) AND password=:pass LIMIT 1");
+    //             $stmt->bindParam(':user', $user);
+    //             $stmt->bindParam(':pass', $pass);
 
 
-                $stmt->execute();
+    //             $stmt->execute();
 
-                // set the resulting array to associative
-                $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    //             // set the resulting array to associative
+    //             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-                $ret = $stmt->fetch();
+    //             $ret = $stmt->fetch();
 
-                if($ret) {
-                    return $ret;
-                }
+    //             if($ret) {
+    //                 return $ret;
+    //             }
 
-                return null;
+    //             return null;
 
-                // echo '<pre>';
-                // print_r($ret);
-                // echo '</pre>';
+    //             // echo '<pre>';
+    //             // print_r($ret);
+    //             // echo '</pre>';
                         
-    }
+    // }
 
     public static function delete($id){
         $conn = Database::getConnection();
@@ -230,30 +230,6 @@ class user
 
     }
 
-    // public static function count($param = null) {
-    //     $conn = Database::getConnection();
-    //     $sql = "SELECT COUNT(*) AS c FROM users WHERE delete_date IS NULL";
-    
-    //     $search_email = isset($param['search_email']) ? $param['search_email'] : '';
-    
-    //     if ($search_email) {
-    //         $sql = "SELECT COUNT(*) AS c FROM users WHERE delete_date IS NULL AND email LIKE :search_email";
-    //     }
-    
-    //     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    //     $stmt = $conn->prepare($sql);
-    
-    //     if ($search_email) {
-    //         $search_email = "%$search_email%";
-    //         $stmt->bindParam(':search_email', $search_email);
-    //     }
-    
-    //     $stmt->execute();
-    //     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    //     $ret = $stmt->fetchAll();
-    
-    //     return $ret[0]['c'];
-    // }
     
 
     public static function list($param)

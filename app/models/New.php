@@ -5,12 +5,12 @@ class tintuc
 
     public static function edit($param){
         $conn = Database::getConnection();
-        $newname = $param['newname'];
+        $name = $param['name'];
         $description = $param['description'];
         $content = $param['content'];
 
-            $stmt = $conn->prepare("INSERT INTO news (newname, description,  content) VALUES (:newname, :description,:content)");
-            $stmt->bindParam(':newname', $newname);
+            $stmt = $conn->prepare("INSERT INTO news (name, description,  content) VALUES (:name, :description,:content)");
+            $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);   
             $stmt->bindParam(':content', $content);   
             return $stmt->execute();
@@ -24,11 +24,11 @@ class tintuc
     public static function add($param){
         // die("124");
         $conn = Database::getConnection();
-        $newname = $param['newname'];
+        $name = $param['name'];
         $description = $param['description'];
         $content = $param['content'];
-            $stmt = $conn->prepare("INSERT INTO news (newname, description, content) VALUES (:newname, :description, :content)");
-            $stmt->bindParam(':newname', $newname);
+            $stmt = $conn->prepare("INSERT INTO news (name, description, content) VALUES (:name, :description, :content)");
+            $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);   
             $stmt->bindParam(':content', $content);   
             return $stmt->execute();
@@ -36,11 +36,11 @@ class tintuc
 
     public static function save($id, $param){
         $conn = Database::getConnection();
-        $newname = $param['newname'];
+        $name = $param['name'];
         $description = $param['description'];
         $content = $param['content'];
-            $stmt = $conn->prepare("UPDATE news SET newname = :newname,  description = :description, content = :content WHERE id = :id");
-            $stmt->bindParam(':newname', $newname);
+            $stmt = $conn->prepare("UPDATE news SET name = :name,  description = :description, content = :content WHERE id = :id");
+            $stmt->bindParam(':name', $name);
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':description', $description);   
             $stmt->bindParam(':content', $content);  
@@ -95,7 +95,7 @@ class tintuc
         $search_string = null;
 
         if($search_name){
-            $search_string = "WHERE newname LIKE :search_name ";
+            $search_string = "WHERE name LIKE :search_name ";
             $sql = "SELECT count(*) AS c FROM news $search_string ";
         }
 
@@ -146,11 +146,11 @@ class tintuc
                 $search_string = null;
 
                 if($search_name){
-                    $search_string = "WHERE newname LIKE :search_name ";
+                    $search_string = "WHERE name LIKE :search_name ";
                 }
 
                 $sql = "SELECT * FROM news $search_string LIMIT :limit OFFSET :offset";
-                if(in_array($sort_by, ['newname', 'created_at'])){
+                if(in_array($sort_by, ['name', 'created_at'])){
                     if(in_array($sort_type, ['asc', 'desc'])){
                         $sql = "SELECT * FROM news $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
                     }

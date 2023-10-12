@@ -8,16 +8,23 @@ class UserController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/User.php";
         $ret = null;
+        $error = '';
         if ($id = ($_GET['id'] ?? "")) {
 
             try{
                 $ret = user::get($id);
 
                 if($_POST['username'] ?? ""){
-                    user::save($id, $_POST);
-                    $ret = user::get($id);
-                    $msg = "Update thành công!";
-
+                    $pass = $_POST['password'] ?? '';
+                                      
+                    if(strlen($pass) < 8 || strlen($pass) > 20){
+                        $error .= "Mật khẩu có độ dài từ 8 đến 20 kí tự <br>";
+                    }
+                    else {
+                        user::save($id, $_POST);
+                        // $ret = user::get($id);
+                        $msg = "Update thành công!";
+                    }                   
                     echo '<pre>';
                     print_r($_POST);
                     echo '</pre>';
@@ -26,7 +33,7 @@ class UserController
                 }
             } catch (PDOException $e) {
                 $error = "<br> Có lỗi" . $e->getMessage();
-                return null;
+                // return null;
             }
 
 
@@ -112,18 +119,41 @@ class UserController
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/User.php";
         if ($_POST['username'] ?? "") {
-   
+            
             try{
-                $ret = user::add($_POST);
-                if($ret){
-                    Header("Location: /admin/users");
+                $user = $_POST['username'];
+                $email = $_POST['email'];
+                $pass1 = $_POST['password'];
+
+                if (preg_match('/^[a-zA-Z0-9_]+$/', $user)) {
+                } else {
+                    $error .= "Tên tài khoản chỉ gồm chữ và số <br>";
                 }
-                else{
-                    echo "Co loi cho nay";
+
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                } else {
+                    $error .= "Email không đúng định dạng <br>";
                 }
+
+                if (strlen($pass1) < 8 || strlen($pass1) > 20) {
+                    $error .= "Mật khẩu có độ dài từ 8 đến 20 kí tự <br>";
+                }
+
+                if (!$error) {
+                    if( User::add($_POST)){
+                        Header("Location: /admin/users");
+
+                    }else{
+                        echo ("Có lỗi đăng kí!! <br>");
+                    }
+
+                    $msg = "Đăng kí thành công";
+                } 
+
+
             } catch (PDOException $e) {
                 $error = "<br> Có lỗi" . $e->getMessage();
-                return null;
+                // return null;
             }
             // require_once "../app/views/users/userAdd.php";
 

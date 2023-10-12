@@ -31,7 +31,6 @@ class LoginController
 
     function registration()
     {
-
         // $_SESSION;
         try {
             $error = '';

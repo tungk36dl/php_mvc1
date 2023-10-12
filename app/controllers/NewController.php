@@ -13,7 +13,7 @@ class NewController
             try{
                 $ret = tintuc::get($id);
 
-                if($_POST['newname'] ?? ""){
+                if($_POST['name'] ?? ""){
                     tintuc::save($id, $_POST);
                     $ret = tintuc::get($id);
                     $msg = "Update thành công!";
@@ -72,7 +72,7 @@ class NewController
         // die("1234");
         // echo("<br/> Đây là trang ADMIN");
         require_once "../app/models/New.php";
-        if ($_POST['newname'] ?? "") {
+        if ($_POST['name'] ?? "") {
 
             try{
                 $ret = tintuc::add($_POST);

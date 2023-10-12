@@ -41,7 +41,7 @@ if(isset($nPage))
 
 <tr>
     <th>ID</th>
-    <th> <a href="/admin/news?sort_by=newname&sort_type=<?php echo $sort_type; echo $str1 ?? '';?>">Tiêu đề </a></th>
+    <th> <a href="/admin/news?sort_by=name&sort_type=<?php echo $sort_type; echo $str1 ?? '';?>">Tiêu đề </a></th>
 
     <th> <a href="/admin/news?sort_by=created_at&sort_type=<?php echo $sort_type; echo $str1 ?? '';?>"> Ngày tạo </th>
     <th>Action</th>
@@ -54,13 +54,13 @@ if(isset($nPage))
     // if(isset($data))
     foreach($data AS $one){
         $id = $one['id'];
-        $newname = $one['newname'];
+        $name = $one['name'];
         $description = $one['description'];
         $content = $one['content'];
         $created_at = $one['created_at'];
         echo('<tr>');
         echo("<td> $id </td> ");
-        echo("<td> $newname </td> ");
+        echo("<td> $name </td> ");
         echo("<td> $created_at  </td> ");
 
         echo("<td> <a href='/admin/news/edit?id=$id'> Edit </a>|<a href='/admin/news/delete?id=$id'> Delete </a> </td> ");
