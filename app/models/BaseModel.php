@@ -4,110 +4,158 @@ define('def_salt', "abc");// Để gán thêm vào mật khẩu md5 bảo vệ t
 
 class BaseModel
 {
+    static $table;
+    static $fillable;
 
-    // public static function auth($user, $pass)
-    // {
-           
-    //             // $pass0 = $pass;
-    //             $pass = md5($pass.def_salt);
-
-                
-    //             // die("123: $pass / $pass0 ");
-
-    //             $conn = Database::getConnection();
-
-    //             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    //             $stmt = $conn->prepare("SELECT * FROM Users WHERE (username=:user or email=:user) AND password=:pass LIMIT 1");
-    //             $stmt->bindParam(':user', $user);
-    //             $stmt->bindParam(':pass', $pass);
-
-
-    //             $stmt->execute();
-
-    //             // set the resulting array to associative
-    //             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-    //             $ret = $stmt->fetch();
-
-    //             if($ret) {
-    //                 return $ret;
-    //             }
-
-    //             return null;
-
-    //             // echo '<pre>';
-    //             // print_r($ret);
-    //             // echo '</pre>';
-                        
-    // }
+    static $search_field;
+    static $sort_field;
+    static $maHoaPassword;
+    static function validation($param){
+    }
+    
 
     public static function delete($id){
+        $table = static::$table;
+
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("UPDATE users SET delete_date = now() WHERE id = :id");
+            $stmt = $conn->prepare("UPDATE $table SET delete_date = now() WHERE id = :id");
             $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
 
     public static function bin_restore($id){
+        $table = static::$table;
+
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("UPDATE users SET delete_date = NULL WHERE id = :id");
+            $stmt = $conn->prepare("UPDATE $table SET delete_date = NULL WHERE id = :id");
             $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
 
     public static function bin_delete($id){
+        $table = static::$table;
+
         $conn = Database::getConnection();
-            $stmt = $conn->prepare("DELETE FROM users WHERE id = :id");
+            $stmt = $conn->prepare("DELETE FROM $table WHERE id = :id");
             $stmt->bindParam(':id', $id);
             return $stmt->execute();
     }
+
     public static function add($param){
+        $table = static::$table;
+
+        // if($table == 'user') { 
+        //     user::validation($param);
+        // }
+        static::validation($param);
+
 
         $conn = Database::getConnection();
-        $username = $param['username'];
-        $email = $param['email'];
-        $password = $param['password'];
-        $password = md5($password.def_salt);
-        $is_admin = $param['is_admin'] ?? "";
+
+        $fillable = static::$fillable;
+
+        $strField = '';
+        $strBind = '';
+        $arrBind = [];
+        foreach($fillable AS $field){
+            $strField .= "$field,";
+            $strBind .= ":$field,";
+            $arrBind[$field] = $param[$field] ?? "";
+    
+        }
+        $strField = trim($strField, ',');
+        $strBind = trim($strBind, ',');
+
+        // $username = $param['username'];
+        // $email = $param['email'];
+        // $password = $param['password'];
+        // $password = md5($password.def_salt);
+        // $is_admin = $param['is_admin'] ?? "";
+        // echo("$strBind");
+        // die("<br> 1243");
+
+            $stmt = $conn->prepare("INSERT INTO $table ($strField) VALUES ($strBind)");
 
 
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password, is_admin) VALUES (:username, :email, :password, :is_admin)");
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $password); 
-            $stmt->bindParam(':is_admin', $is_admin);     
+            foreach($arrBind AS $field => $val){
+                if($field == 'password'){
+                    $val = md5($val.def_salt);
+                    $stmt->bindValue(":$field", $val);
+
+                }else
+                    $stmt->bindValue(":$field", $val);
+            }
+            // $stmt->bindParam(':username', $username);
+            // $stmt->bindParam(':email', $email);
+            // $stmt->bindParam(':password', $password); 
+            // $stmt->bindParam(':is_admin', $is_admin);     
             return $stmt->execute();
     }
 
     public static function save($id, $param){
+        $table = static::$table;
+
+        static::validation($param);
+
         $conn = Database::getConnection();
-        $username = $param['username'];
-        $email = $param['email'];
-        $password = $param['password'];
-        $password = md5($password.def_salt);
-        $is_admin = $param['is_admin'] ?? '';
+
+        $fillable = static::$fillable;
+
+        $strField = '';
+        // $strBind = '';
+        $arrBind = [];
+        foreach($fillable AS $field){
+
+            
+            $strField .= "$field = :$field ,";
+            $arrBind[$field] = $param[$field];
 
 
-            $stmt = $conn->prepare("UPDATE users SET username = :username, email = :email, password = :password,is_admin = :is_admin  WHERE id = :id");
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':id', $id);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $password); 
-            $stmt->bindParam(':is_admin', $is_admin);   
+        }
+        $strField = trim($strField, ',');
+        // $strBind = trim($strBind, ',');
+
+
+
+        // $username = $param['username'];
+        // $email = $param['email'];
+        // $password = $param['password'];
+        // $password = md5($password.def_salt);
+        // $is_admin = $param['is_admin'] ?? '';
+        echo("$strField");
+        // die("123");
+
+            $stmt = $conn->prepare("UPDATE $table SET $strField  WHERE id = $id");
+
+
+            foreach($arrBind AS $field => $val){
+                if($field == 'password'){
+                    $val = md5($val.def_salt);
+                    $stmt->bindValue(":$field", $val);
+
+                }else
+                    $stmt->bindValue(":$field", $val);
+            }
+            // $stmt->bindParam(':username', $username);
+            // $stmt->bindParam(':id', $id);
+            // $stmt->bindParam(':email', $email);
+            // $stmt->bindParam(':password', $password); 
+            // $stmt->bindParam(':is_admin', $is_admin);   
   
             return $stmt->execute();
     }
 
     public static function get($id)
     {
+        $table = static::$table;
+
             try {
 
                 $conn = Database::getConnection();
 
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $stmt = $conn->prepare("SELECT * FROM Users WHERE id=:id");
+                $stmt = $conn->prepare("SELECT * FROM $table WHERE id=:id");
                 $stmt->bindParam(':id', $id);
 
                 $stmt->execute();
@@ -135,22 +183,25 @@ class BaseModel
     }
 
     public static function count($param){
+        $table = static::$table;
+
+        $search_field = static::$search_field;
 
        
 
         $conn = Database::getConnection();
-        $sql = "SELECT count(*) AS c FROM users  WHERE delete_date IS NULL";
+        $sql = "SELECT count(*) AS c FROM $table  WHERE delete_date IS NULL";
 
-        $search_email = $param['search_email'] ?? '';
+        $search_value = $param['search_value'] ?? '';
 
 
         // $search_string = null;
 
-        if($search_email){            
-            // $search_string = "AND email LIKE :search_email ";
-            $sql = "SELECT count(*) AS c FROM users  WHERE delete_date IS NULL AND email LIKE :search_email  ;";
-            // echo "search_email = :search_email";
-            // echo("<br/> search_email =  $search_email;");
+        if($search_value){            
+            // $search_string = "AND email LIKE :search_value ";
+            $sql = "SELECT count(*) AS c FROM $table  WHERE delete_date IS NULL AND $search_field LIKE :search_value  ;";
+            // echo "search_value = :search_value";
+            // echo("<br/> search_value =  $search_value;");
             
         }
 
@@ -159,9 +210,9 @@ class BaseModel
 
         $stmt = $conn->prepare($sql);
 
-        if($search_email){
-            $search_email = "%$search_email%";
-            $stmt->bindParam(':search_email' , $search_email);
+        if($search_value){
+            $search_value = "%$search_value%";
+            $stmt->bindParam(':search_value' , $search_value);
         }
         $stmt->execute();
 
@@ -183,22 +234,25 @@ class BaseModel
     }
 
     public static function countBin($param){
+        $table = static::$table;
+
+        $search_field = static::$search_field;
 
        
 
         $conn = Database::getConnection();
-        $sql = "SELECT count(*) AS c FROM users  WHERE delete_date IS NOT NULL";
+        $sql = "SELECT count(*) AS c FROM $table  WHERE delete_date IS NOT NULL";
 
-        $search_email = $param['search_email'] ?? '';
+        $search_value = $param['search_value'] ?? '';
 
 
         // $search_string = null;
 
-        if($search_email){            
-            // $search_string = "AND email LIKE :search_email ";
-            $sql = "SELECT count(*) AS c FROM users  WHERE delete_date IS NOT NULL AND email LIKE :search_email  ;";
-            // echo "search_email = :search_email";
-            // echo("<br/> search_email =  $search_email;");
+        if($search_value){            
+            // $search_string = "AND email LIKE :search_value ";
+            $sql = "SELECT count(*) AS c FROM $table  WHERE delete_date IS NOT NULL AND $search_field LIKE :search_value  ;";
+            // echo "search_value = :search_value";
+            // echo("<br/> search_value =  $search_value;");
             
         }
 
@@ -207,9 +261,9 @@ class BaseModel
 
         $stmt = $conn->prepare($sql);
 
-        if($search_email){
-            $search_email = "%$search_email%";
-            $stmt->bindParam(':search_email' , $search_email);
+        if($search_value){
+            $search_value = "%$search_value%";
+            $stmt->bindParam(':search_value' , $search_value);
         }
         $stmt->execute();
 
@@ -225,36 +279,39 @@ class BaseModel
         $ret = $stmt->fetchAll();
 
         return $ret[0]['c']; 
-    
-        
-
     }
 
     
 
     public static function list($param)
     {
+        $table = static::$table;
+
+
+
+
                 $page = $param['page'];
                 $limit = $param['limit'];
                 $offset = ($page - 1) * $limit;
 
 
-                // $sql = "SELECT * FROM Users LIMIT :limit OFFSET :offset; ";
+                // $sql = "SELECT * FROM $table LIMIT :limit OFFSET :offset; ";
 
                 $sort_by=$param['sort_by'];
                 $sort_type=$param['sort_type'];
-                $search_email = $param['search_email'];
+                $search_value = $param['search_value'];
 
-                $search_string = null;
+                $search_string = "";
 
-                if($search_email){
-                    $search_string = "AND email LIKE :search_email ";
+                if($search_value){
+                    $search_string = "AND ".static::$search_field ." LIKE :search_value ";
                 }
+                echo(" search_string = ".$search_string);
 
-                $sql = "SELECT * FROM users WHERE delete_date is null $search_string LIMIT :limit OFFSET :offset";
-                if(in_array($sort_by, ['username', 'email'])){
+                $sql = "SELECT * FROM $table WHERE delete_date is null $search_string LIMIT :limit OFFSET :offset";
+                if(in_array($sort_by, static::$sort_field)){
                     if(in_array($sort_type, ['asc', 'desc'])){
-                        $sql = "SELECT * FROM Users WHERE delete_date is null $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
+                        $sql = "SELECT * FROM $table WHERE delete_date is null $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
                     }
                 }
 
@@ -265,22 +322,23 @@ class BaseModel
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 // echo "Connected successfully";
 
-
+                echo '<pre>';
+                print_r($sql);
+                echo '</pre>';
 
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':limit' , $limit, PDO::PARAM_INT);
                 $stmt->bindParam(':offset' , $offset, PDO::PARAM_INT);
-                if($search_email){
-                    $search_email = "%$search_email%";
-                    $stmt->bindParam(':search_email' , $search_email);
+                if($search_value){
+                    $search_value = "%$search_value%";
+                    $stmt->bindParam(':search_value' , $search_value);
                 }
 
                 $stmt->execute();
 
                 // set the resulting array to associative
                 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
                 $ret = $stmt->fetchAll();
                 // echo '<pre>';
                 // print_r($ret);
@@ -291,27 +349,30 @@ class BaseModel
 
     public static function listBin($param)
     {
+        $table = static::$table;
+
+
                 $page = $param['page'];
                 $limit = $param['limit'];
                 $offset = ($page - 1) * $limit;
 
 
-                // $sql = "SELECT * FROM Users LIMIT :limit OFFSET :offset; ";
+                // $sql = "SELECT * FROM $table LIMIT :limit OFFSET :offset; ";
 
                 $sort_by=$param['sort_by'];
                 $sort_type=$param['sort_type'];
-                $search_email = $param['search_email'];
+                $search_value = $param['search_value'];
 
                 $search_string = null;
 
-                if($search_email){
-                    $search_string = "AND email LIKE :search_email ";
+                if($search_value){
+                    $search_string = "AND ".static::$search_field ."  LIKE :search_value ";
                 }
 
-                $sql = "SELECT * FROM users WHERE delete_date is not null $search_string LIMIT :limit OFFSET :offset";
-                if(in_array($sort_by, ['username', 'email'])){
+                $sql = "SELECT * FROM $table WHERE delete_date is not null $search_string LIMIT :limit OFFSET :offset";
+                if(in_array($sort_by, static::$sort_field)){
                     if(in_array($sort_type, ['asc', 'desc'])){
-                        $sql = "SELECT * FROM Users WHERE delete_date is not null $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
+                        $sql = "SELECT * FROM $table WHERE delete_date is not null $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
                     }
                 }
 
@@ -328,9 +389,9 @@ class BaseModel
 
                 $stmt->bindParam(':limit' , $limit, PDO::PARAM_INT);
                 $stmt->bindParam(':offset' , $offset, PDO::PARAM_INT);
-                if($search_email){
-                    $search_email = "%$search_email%";
-                    $stmt->bindParam(':search_email' , $search_email);
+                if($search_value){
+                    $search_value = "%$search_value%";
+                    $stmt->bindParam(':search_value' , $search_value);
                 }
 
                 $stmt->execute();
@@ -345,4 +406,42 @@ class BaseModel
                 return $ret;
 
     }
+        // public static function auth($user, $pass)
+    // {
+        // $table = static::$table;
+
+           
+    //             // $pass0 = $pass;
+    //             $pass = md5($pass.def_salt);
+
+                
+    //             // die("123: $pass / $pass0 ");
+
+    //             $conn = Database::getConnection();
+
+    //             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    //             $stmt = $conn->prepare("SELECT * FROM $table WHERE (username=:user or email=:user) AND password=:pass LIMIT 1");
+    //             $stmt->bindParam(':user', $user);
+    //             $stmt->bindParam(':pass', $pass);
+
+
+    //             $stmt->execute();
+
+    //             // set the resulting array to associative
+    //             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    //             $ret = $stmt->fetch();
+
+    //             if($ret) {
+    //                 return $ret;
+    //             }
+
+    //             return null;
+
+    //             // echo '<pre>';
+    //             // print_r($ret);
+    //             // echo '</pre>';
+                        
+    // }
 }

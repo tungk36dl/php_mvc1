@@ -1,190 +1,36 @@
 <?php
 
-class tintuc
+require_once "BaseModel.php";
+
+class tintuc extends  BaseModel
 { 
+    static $table = 'news';
 
-    public static function edit($param){
-        $conn = Database::getConnection();
-        $name = $param['name'];
-        $description = $param['description'];
-        $content = $param['content'];
-
-            $stmt = $conn->prepare("INSERT INTO news (name, description,  content) VALUES (:name, :description,:content)");
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':description', $description);   
-            $stmt->bindParam(':content', $content);   
-            return $stmt->execute();
-    }
-    public static function delete($id){
-        $conn = Database::getConnection();
-            $stmt = $conn->prepare("DELETE FROM news WHERE id = :id");
-            $stmt->bindParam(':id', $id);
-            return $stmt->execute();
-    }
-    public static function add($param){
-        // die("124");
-        $conn = Database::getConnection();
-        $name = $param['name'];
-        $description = $param['description'];
-        $content = $param['content'];
-            $stmt = $conn->prepare("INSERT INTO news (name, description, content) VALUES (:name, :description, :content)");
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':description', $description);   
-            $stmt->bindParam(':content', $content);   
-            return $stmt->execute();
-    }
-
-    public static function save($id, $param){
-        $conn = Database::getConnection();
-        $name = $param['name'];
-        $description = $param['description'];
-        $content = $param['content'];
-            $stmt = $conn->prepare("UPDATE news SET name = :name,  description = :description, content = :content WHERE id = :id");
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':id', $id);
-            $stmt->bindParam(':description', $description);   
-            $stmt->bindParam(':content', $content);  
-            return $stmt->execute();
-    }
-
-    public static function get($id)
-    {
-            try {
-
-                $conn = Database::getConnection();
-
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                $stmt = $conn->prepare("SELECT * FROM news WHERE id=:id");
-                $stmt->bindParam(':id', $id);
-
-                $stmt->execute();
-
-                // set the resulting array to associative
-                $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-                $ret = $stmt->fetchAll();
-
-                if($ret) {
-                    return $ret[0];
-                }
-
-                return null;
-
-                // echo '<pre>';
-                // print_r($ret);
-                // echo '</pre>';
-                
-
-            } catch (PDOException $e) {
-                echo "Connection failed: " . $e->getMessage();
-            }
-           
-    }
-
-    public static function count($param = null){
-
-       
-
-        $conn = Database::getConnection();
-        $sql = "SELECT count(*) AS c FROM news";
-
-        $search_name = $param['search_name'] ?? '';
-
-
-        $search_string = null;
-
-        if($search_name){
-            $search_string = "WHERE name LIKE :search_name ";
-            $sql = "SELECT count(*) AS c FROM news $search_string ";
-        }
-
-
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $stmt = $conn->prepare("SELECT count(*) AS c FROM news $search_string");
-
-        if($search_name){
-            $search_name = "%$search_name%";
-            $stmt->bindParam(':search_name' , $search_name);
-        }
-
-        $stmt->execute();
-
-      
-
-        // set the resulting array to associative
-        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-        $ret = $stmt->fetchAll();
-
-        return $ret[0]['c']; 
-    
-        
-
-    }
-
-    public static function list($param)
-    {
-            // $servername = "localhost";
-            // $name = "root";
-            // $password = "";
-
-         
-
-                $page = $param['page'];
-                $limit = $param['limit'];
-                $offset = ($page - 1) * $limit;
-
-
-                // $sql = "SELECT * FROM news LIMIT :limit OFFSET :offset; ";
-
-                $sort_by=$param['sort_by'];
-                $sort_type=$param['sort_type'];
-                $search_name = $param['search_name'];
-
-                $search_string = null;
-
-                if($search_name){
-                    $search_string = "WHERE name LIKE :search_name ";
-                }
-
-                $sql = "SELECT * FROM news $search_string LIMIT :limit OFFSET :offset";
-                if(in_array($sort_by, ['name', 'created_at'])){
-                    if(in_array($sort_type, ['asc', 'desc'])){
-                        $sql = "SELECT * FROM news $search_string ORDER BY $sort_by $sort_type LIMIT :limit OFFSET :offset; ";
-                    }
-                }
-
-                $conn = Database::getConnection();
-
-                // $conn = new PDO("mysql:host=$servername;dbname=demo_mvc", $name, $password);
-                // set the PDO error mode to exception
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // echo "Connected successfully";
+    static $fillable = ['name' , 'thumb', 'description', 'content'];
+    static $search_field = 'name';
+    static $sort_field = ['name', 'created_at'];
 
 
 
-                $stmt = $conn->prepare($sql);
+    static $indexListField = ['id', 'name', 'thumb', 'description' , 'content','created_at'];
+    static $metaFieldName = [
+        'id' => 'Mã tin tức',
+        'name' => 'Tên tin tức',
+        'thumb' => 'Ảnh',
+        'description' => 'Mô tả ',
+        'content' => 'Nội dung',
+        'created_at' => 'Ngày tạo',
 
-                $stmt->bindParam(':limit' , $limit, PDO::PARAM_INT);
-                $stmt->bindParam(':offset' , $offset, PDO::PARAM_INT);
-                if($search_name){
-                    $search_name = "%$search_name%";
-                    $stmt->bindParam(':search_name' , $search_name);
-                }
+    ];
 
-                $stmt->execute();
+  static $metaFieldType = [
+    'thumb' => 'file',
+    'content' => 'textarea',
+    'description' => 'textarea',
+    'cat_id' => 'checkbox',
+  ];
 
-                // set the resulting array to associative
-                $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+  static $nameView = 'Tin tức';  
 
-                $ret = $stmt->fetchAll();
-                // echo '<pre>';
-                // print_r($ret);
-                // echo '</pre>';
-                return $ret;
-
-    }
 }
 

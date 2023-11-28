@@ -2,74 +2,143 @@
 require_once "../templates/admin/header.php";
 ?>
 
-<a href="/admin/news/add">Add New </a>
+<?php
+if (isset($msg)) {
+    echo "<br> $msg </p>";
+}
+if (isset($error)) {
+    echo '<pre>';
+    print_r($error);
+    echo '</pre>';
+}
+?>
+
+
+<?php
+// echo '<pre>';
+// print_r($_SERVER);
+// echo '</pre>';
+
+$chuoi_cha = $_SERVER['REQUEST_URI'];
+$chuoi_con = "/news/bin";
+
+// echo ($chuoi_cha);
+// echo ('<br>');
+// echo ($chuoi_con);
+
+if (strpos($chuoi_cha, $chuoi_con)) {
+    echo ('Chuoi con trong chuoi cha');
+} else {
+    echo ('<a href="/admin/news/add">Add New </a>');
+}
+?>
+
 
 <form action="" method="get">
-Tìm tin tuc : <input type="text" name="search_name" value="<?php echo $_GET['search_name'] ?? ''; ?>">
-<input type="submit" value="Tim">
+    Tìm tên tin tuc : <input type="text" name="search_value" value="<?php echo $_GET['search_value'] ?? ''; ?>">
+    <input type="submit" value="Tim">
 </form>
 <br>
-Trang : 
-<?php 
-if(isset($nPage))
+Trang :
+<?php
+if (isset($nPage))
     $str1 = null;
-    if(isset($search_name)){
-        $str1= "&search_name=$search_name";
-    }
+if (isset($search_value)) {
+    $str1 = "&search_value=$search_value";
+}
 
-    $str2 = null;
-    if(isset($sort_type) && isset($sort_by)){
-        $str2 = "sort_by=$sort_by&sort_type=$sort_type";
+$str2 = null;
+if (isset($sort_type) && isset($sort_by)) {
+    $str2 = "sort_by=$sort_by&sort_type=$sort_type";
+}
+
+for ($i = 1; $i <= $nPage; $i++) {
+    if (strpos($chuoi_cha, $chuoi_con)) {
+        echo ("<a href= '/admin/news/bin?$str2&page=$i$str1'> $i </a> | ");
+    } else {
+        echo ("<a href= '/admin/news?$str2&page=$i$str1'> $i </a> | ");
     }
-    
-    for($i = 1; $i <= $nPage; $i++) {
-        echo("<a href= '/admin/news?$str2&page=$i$str1'> $i </a> | ");
-        
-    }
-    $sort_type = "asc";
-    if($_GET['sort_type'] ?? ''){
-        $sort_type = $_GET['sort_type'];
-        if($sort_type == 'asc')
-            $sort_type = 'desc';
-        else
-            $sort_type = 'asc';
-    }
+}
+
+//Refactorying
+
+$sort_type = "asc";
+if ($_GET['sort_type'] ?? '') {
+    $sort_type = $_GET['sort_type'];
+    if ($sort_type == 'asc')
+        $sort_type = 'desc';
+    else
+        $sort_type = 'asc';
+}
 ?>
 
 
 <table border="1">
 
-<tr>
-    <th>ID</th>
-    <th> <a href="/admin/news?sort_by=name&sort_type=<?php echo $sort_type; echo $str1 ?? '';?>">Tiêu đề </a></th>
+    <tr>
+        <th>id</th>
+        <th> <a href="<?php if (strpos($chuoi_cha, $chuoi_con)) {
+                            echo ('/admin/news/bin');
+                        } else {
+                            echo ('/admin/news');
+                        } ?>?sort_by=name&sort_type=<?php echo $sort_type;
+                                                                                                                                                            echo $str1 ?? ''; ?>">Tên tin tuc </a></th>
+        <th> <a href="">Mô tả tin tức </a></th>
+        <th>Nội dung tin tức</th>
+        <th> <a href="<?php if (strpos($chuoi_cha, $chuoi_con)) {
+                            echo ('/admin/news/bin');
+                        } else {
+                            echo ('/admin/news');
+                        } ?>?sort_by=created_at&sort_type=<?php echo $sort_type;
+                                                                                                                                                            echo $str1 ?? ''; ?>">Ngày tạo</th>
+        <th>Action</th>
+    </tr>
+    <?php
 
-    <th> <a href="/admin/news?sort_by=created_at&sort_type=<?php echo $sort_type; echo $str1 ?? '';?>"> Ngày tạo </th>
-    <th>Action</th>
-</tr>
-<?php
-    
+    //     echo '<pre>';
+    // print_r($_SERVER);
+    // echo '</pre>';
+
     // echo '<pre>';
     // print_r($data);
     // echo '</pre>';
     // if(isset($data))
-    foreach($data AS $one){
+
+
+    foreach ($data as $one) {
         $id = $one['id'];
         $name = $one['name'];
-        $description = $one['description'];
         $content = $one['content'];
+        $description = $one['description'];
         $created_at = $one['created_at'];
-        echo('<tr>');
-        echo("<td> $id </td> ");
-        echo("<td> $name </td> ");
-        echo("<td> $created_at  </td> ");
+        echo ('<tr>');
+        echo ("<td> $id </td> ");
+        echo ("<td> $name </td> ");
+        echo ("<td> $description  </td> ");
+        echo ("<td> $content  </td> ");
+        echo ("<td> $created_at  </td> ");
 
-        echo("<td> <a href='/admin/news/edit?id=$id'> Edit </a>|<a href='/admin/news/delete?id=$id'> Delete </a> </td> ");
-        echo('</tr>');
-        
+        if (strpos($chuoi_cha, $chuoi_con)) {
+            echo ("<td> <a href='/admin/news/bin/restore?id=$id'> Restore </a>|<a href='/admin/news/bin/delete?id=$id'> Delete </a> </td> ");
+        } else {
+            echo ("<td> <a href='/admin/news/edit?id=$id'> Edit </a>|<a href='/admin/news/delete?id=$id'> Delete </a> </td> ");
+        }
+        echo ('</tr>');
     }
-?>
+    ?>
 
 </table>
+
+
+<p></p>
+
+<?php
+if (strpos($chuoi_cha, $chuoi_con)) {
+} else {
+    echo ('<a href="/admin/news/bin">Thùng rác </a>');
+}
+?>
+
 
 
 

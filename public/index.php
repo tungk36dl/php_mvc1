@@ -29,6 +29,9 @@ $routes = [
     '/admin/news/add' => [NewController::class, 'add'],
     '/admin/news/delete' => [NewController::class, 'delete'],
     '/admin/news/edit' => [NewController::class, 'edit'],
+    '/admin/news/bin/delete' => [NewController::class, 'bin_delete'],
+    '/admin/news/bin/restore' => [NewController::class, 'bin_restore'],
+    '/admin/news/bin' => [NewController::class, 'bin'],
     '/admin/news' => [NewController::class, 'list'],
 
     '/admin/products/add' => [ProductController::class, 'add'],
@@ -83,3 +86,4 @@ echo '</pre>';
 
 
 ?>
+

@@ -35,7 +35,7 @@ if (strpos($chuoi_cha, $chuoi_con)) {
 
 
 <form action="" method="get">
-    Tìm tên sản phẩm : <input type="text" name="search_name" value="<?php echo $_GET['search_name'] ?? ''; ?>">
+    Tìm tên sản phẩm : <input type="text" name="search_value" value="<?php echo $_GET['search_value'] ?? ''; ?>">
     <input type="submit" value="Tim">
 </form>
 <br>
@@ -43,8 +43,8 @@ Trang :
 <?php
 if (isset($nPage))
     $str1 = null;
-if (isset($search_name)) {
-    $str1 = "&search_name=$search_name";
+if (isset($search_value)) {
+    $str1 = "&search_value=$search_value";
 }
 
 $str2 = null;
