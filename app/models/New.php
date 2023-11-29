@@ -24,7 +24,7 @@ class tintuc extends  BaseModel
     ];
 
   static $metaFieldType = [
-    'thumb' => 'file',
+    'thumb' => 'image',
     'content' => 'textarea',
     'description' => 'textarea',
     'cat_id' => 'checkbox',
@@ -33,4 +33,7 @@ class tintuc extends  BaseModel
   static $nameView = 'Tin tức';  
 
 }
+
+
+
 

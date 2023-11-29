@@ -53,6 +53,28 @@ $routes = [
     
     '/member' =>  [MemberController::class, 'index'],
     '/admin' => [AdminController::class, 'index'],
+
+
+
+
+
+    '/api/news/get' => [NewController::class, 'get_api'],
+    '/api/news/edit' => [NewController::class, 'edit_api'],
+    '/api/news/delete' => [NewController::class, 'delete_api'],
+    '/api/news/add' => [NewController::class, 'add_api'],
+    '/api/news' => [NewController::class, 'list_api'],
+
+    '/api/products/get' => [ProductController::class, 'get_api'],
+    '/api/products/edit' => [ProductController::class, 'edit_api'],
+    '/api/products/delete' => [ProductController::class, 'delete_api'],
+    '/api/products/add' => [ProductController::class, 'add_api'],
+    '/api/products' => [ProductController::class, 'list_api'],
+
+
+
+
+
+
     '/' =>  [HomeController::class, 'index'],
 ];
 
@@ -77,6 +99,10 @@ foreach($routes AS $uri => $arrayCtrl){
     }
     
     
+}
+
+if(str_starts_with($rqUri, "/api/")){
+    die();
 }
 
 echo("<hr><br/>DeBug: URI = $rqUri");

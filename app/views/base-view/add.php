@@ -15,7 +15,7 @@ $NameVietNam = $modelClass::$nameView; ///+ Trar veef 'Sản phẩm '
 ?>
 
 
-<form action="" method="POST">
+<form action="" method="POST" enctype="multipart/form-data">
 
         <?php 
         
@@ -32,9 +32,13 @@ $NameVietNam = $modelClass::$nameView; ///+ Trar veef 'Sản phẩm '
             else if($kiemTraField == 'checkbox') {
                 echo "<span > $fieldVN </span>:  <input type='checkbox' name='$field' value='1' > <br> <br>";
             }
+            else if($kiemTraField == 'image') {
+                echo "<span > $fieldVN </span>:  <input type='file' name='$field'  > <br> <br>";
+            }
             else if($field == 'password') {
                 echo "<span > $fieldVN </span>:  <input type='text' name='$field'  > <br> <br>";
             }
+
             else {
                 echo "<span > $fieldVN </span>:  <input type='text' name='$field' > <br> <br>";
             }

@@ -23,23 +23,23 @@ Edit  $NameVietNam.....
      
      foreach($modelClass::$fillable as $field) {
         $fieldVN = $modelClass::$metaFieldName[$field];
-        $retTmp = $ret[$field];
+
         $kiemTraField = $modelClass::$metaFieldType[$field] ?? "";
 
         if($kiemTraField == 'textarea') {
-            echo "<span > $fieldVN </span>:  <textarea name = '$field'> $retTmp </textarea> <br> <br>";
+            echo "<span > $fieldVN </span>:  <textarea name = '$field'> $ret[$field] </textarea> <br> <br>";
         }
         else if($kiemTraField == 'checkbox') {
             echo "<span > $fieldVN </span>:  <input type='checkbox' name='$field' value='1' > <br> <br>";
         }
-        else if($kiemTraField == 'file') {
-            echo "<span > $fieldVN </span>:  <input type='file' name='$field' value='$retTmp' > <br> <br>";
+        else if($kiemTraField == 'image') {
+            echo "<span > $fieldVN </span>:  <img width='10%' src= '$ret[$field]'> <input type='file' name='$field'  > <br> <br>";
         }
         else if($field == 'password') {
             echo "<span > $fieldVN </span>:  <input type='text' name='$field' value='' > <br> <br>";
         }
         else {
-            echo "<span > $fieldVN </span>:  <input type='text' name='$field' value='$retTmp' > <br> <br>";
+            echo "<span > $fieldVN </span>:  <input type='text' name='$field' value='$ret[$field]' > <br> <br>";
         }
 
      }

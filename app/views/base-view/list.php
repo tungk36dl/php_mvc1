@@ -107,26 +107,7 @@ if ($_GET['sort_type'] ?? '') {
 
 
 
-<!-- 
-    <tr>
-        <th>id</th>
-        <th> <a href="<?php if (strpos($chuoi_cha, $chuoi_con)) {
-                            echo ("/admin/$adminNameUrl/bin");
-                        } else {
-                            echo ("/admin/$adminNameUrl");
-                        } ?>?sort_by=name&sort_type=<?php echo $sort_type;
-                                                                                                                                                            echo $str1 ?? ''; ?>">Tên sản phẩm </a></th>
-        <th> <a href="">
-                Mã sản phẩm </a></th>
-        <th>Mô tả sản phẩm</th>
-        <th> <a href="<?php if (strpos($chuoi_cha, $chuoi_con)) {
-                            echo ("/admin/$adminNameUrl/bin");
-                        } else {
-                            echo ("/admin/$adminNameUrl");
-                        } ?>?sort_by=price&sort_type=<?php echo $sort_type;
-                                                                                                                                                            echo $str1 ?? ''; ?>">Giá sản phẩm</th>
-        <th>Action</th>
-    </tr> -->
+
     <?php
 
     //     echo '<pre>';
@@ -148,7 +129,10 @@ if ($_GET['sort_type'] ?? '') {
                 $val = number_format($one[$field], 0, '.', ' ');
 
             }
-            echo ("<td>" . $val. "</td>");
+            if($field == 'thumb') {
+                echo "<td> <img width='10%' src= '$val'> </td>";
+            }else
+                echo ("<td>" . $val. "</td>");
         }
 
         $id = $one['id'];
@@ -162,24 +146,7 @@ if ($_GET['sort_type'] ?? '') {
 
         echo("</tr>");
 
-        // $id = $one['id'];
-        // $name = $one['name'];
-        // $code = $one['code'];
-        // $description = $one['description'];
-        // $price = number_format($one['price'], 0, '.', ' ');;
-        // echo ('<tr>');
-        // echo ("<td> $id </td> ");
-        // echo ("<td> $name </td> ");
-        // echo ("<td> $code  </td> ");
-        // echo ("<td> $description  </td> ");
-        // echo ("<td> $price  </td> ");
 
-        // if (strpos($chuoi_cha, $chuoi_con)) {
-        //     echo ("<td> <a href='/admin/$adminNameUrl/bin/restore?id=$id'> Restore </a>|<a href='/admin/$adminNameUrl/bin/delete?id=$id'> Delete </a> </td> ");
-        // } else {
-        //     echo ("<td> <a href='/admin/$adminNameUrl/edit?id=$id'> Edit </a>|<a href='/admin/$adminNameUrl/delete?id=$id'> Delete </a> </td> ");
-        // }
-        // echo ('</tr>');
     }
     ?>
 

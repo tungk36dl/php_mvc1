@@ -89,10 +89,21 @@ class BaseModel
             // $stmt->bindParam(':email', $email);
             // $stmt->bindParam(':password', $password); 
             // $stmt->bindParam(':is_admin', $is_admin);     
-            return $stmt->execute();
+            // return $stmt->execute();
+
+            if($stmt->execute()) {
+                return $conn->lastInsertId();
+            }
+            return null;
     }
 
     public static function save($id, $param){
+
+        if(!is_numeric($id)) {
+            throw new Exception("Save: Not valid id!");
+        }
+
+
         $table = static::$table;
 
         static::validation($param);
@@ -105,9 +116,10 @@ class BaseModel
         // $strBind = '';
         $arrBind = [];
         foreach($fillable AS $field){
-
+            if(!isset($param[$field]))
+                continue; // Câu điều kiện này dùng để khi sử dụng edit bằng API chỉ post 1 phần tử thì sẽ vẫn tiếp tục(ko cần phải post đủu số phần tử) mà ko bị báo lỗi 
             
-            $strField .= "$field = :$field ,";
+            $strField .= "$field=:$field,";
             $arrBind[$field] = $param[$field];
 
 
@@ -122,7 +134,7 @@ class BaseModel
         // $password = $param['password'];
         // $password = md5($password.def_salt);
         // $is_admin = $param['is_admin'] ?? '';
-        echo("$strField");
+        // echo("$strField");
         // die("123");
 
             $stmt = $conn->prepare("UPDATE $table SET $strField  WHERE id = $id");
@@ -306,7 +318,7 @@ class BaseModel
                 if($search_value){
                     $search_string = "AND ".static::$search_field ." LIKE :search_value ";
                 }
-                echo(" search_string = ".$search_string);
+                // echo(" search_string = ".$search_string);
 
                 $sql = "SELECT * FROM $table WHERE delete_date is null $search_string LIMIT :limit OFFSET :offset";
                 if(in_array($sort_by, static::$sort_field)){
@@ -322,9 +334,9 @@ class BaseModel
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 // echo "Connected successfully";
 
-                echo '<pre>';
-                print_r($sql);
-                echo '</pre>';
+                // echo '<pre>';
+                // print_r($sql);
+                // echo '</pre>';
 
                 $stmt = $conn->prepare($sql);
 
